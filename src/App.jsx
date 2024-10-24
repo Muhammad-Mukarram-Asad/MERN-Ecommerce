@@ -16,6 +16,8 @@ import ShoppingAccount from "./pages/shoppingView/account";
 import ValidateAuthentication from "./components/common/checkAuth";
 import NotFoundPage from "./pages/notFound";
 import UnAuthenticatedPage from "./pages/unAuth";
+import { ToastContainer } from "react-toastify";
+
 function App() {
 
   // Some Dummy Data:
@@ -29,6 +31,7 @@ function App() {
   // };
   return (
     <div className="flex flex-col overflow-hidden bg-white">
+      <ToastContainer />
       {/* Auth Routes */}
       <Routes>
         <Route path="/auth" element={
