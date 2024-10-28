@@ -1,7 +1,7 @@
 import ComponentForm from '@/components/common/form';
 import { registerFormControls } from '@/config';
 import React, { useState } from 'react'
-import { Outlet, Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { registerUser } from '@/store/authSlice';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';

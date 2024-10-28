@@ -17,25 +17,30 @@ import ValidateAuthentication from "./components/common/checkAuth";
 import NotFoundPage from "./pages/notFound";
 import UnAuthenticatedPage from "./pages/unAuth";
 import { ToastContainer } from "react-toastify";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { checkAuth } from "./store/authSlice";
 
 function App() {
 
-  // Some Dummy Data:
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
+  console.log("App.js userInfo => ",isAuthenticated, user);
 
-  let isAuthenticated = false;
-  let userInfo = null;
-  // let userInfo = {
-  //   name: "mukii",
-  //   role: "normal",
-  //   age: 23
-  // };
+  useEffect(() => {
+    console.log("Dispatching checkAuth");
+    dispatch(checkAuth());
+  }, [dispatch]);
+
+
   return (
     <div className="flex flex-col overflow-hidden bg-white">
       <ToastContainer />
       {/* Auth Routes */}
       <Routes>
         <Route path="/auth" element={
-             <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={userInfo}>
+             <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={user}>
                <AuthLayout />
              </ValidateAuthentication>
         }>
@@ -45,7 +50,7 @@ function App() {
 
         {/* Admin Routes */}
         <Route path="/admin" element={
-            <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={userInfo}>
+            <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={user}>
               <AdminLayout />
             </ValidateAuthentication>
         }>
@@ -57,7 +62,7 @@ function App() {
 
         {/* Shopping Routes */}
         <Route path="/shop" element={
-           <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={userInfo}>
+           <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={user}>
            <ShoppingLayout />
          </ValidateAuthentication>
         }>

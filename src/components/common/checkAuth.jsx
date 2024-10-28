@@ -3,6 +3,7 @@ import { useLocation, Navigate } from "react-router-dom";
 
 const ValidateAuthentication = ({ isAuthenticated, userInfo, children }) => {
   const location = useLocation();
+  console.log("props => ", isAuthenticated, userInfo);
 
 //   Below is the scenario related to that if user is not authenticated and tries to go to any other route except /auth/login or /auth/register.
   if (

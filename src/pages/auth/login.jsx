@@ -1,18 +1,31 @@
 import ComponentForm from '@/components/common/form';
 import { loginFormControls } from '@/config';
 import React, { useState } from 'react'
-import { Outlet, Link } from 'react-router-dom'
+import {Link, useNavigate } from 'react-router-dom'
+import { loginUser } from '@/store/authSlice';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
 const Authlogin = () => {
   const initialState = {
     email: '',
     password: '',
   }
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(initialState);
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+
+    dispatch(loginUser(formData))
+    .unwrap() // Unwraps the result of the thunk action, allowing us to handle fulfilled and rejected states directly
+    .then((response) => {
+      toast.success(`${response?.data?.message || 'Login successful'}`);
+    })
+    .catch((error) => {
+      toast.error(`Login failed: ${error?.message}`);
+    });
   }
   return (
     <main className='mx-auto w-full max-w-md space-y-6'>

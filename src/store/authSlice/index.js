@@ -5,7 +5,6 @@ const initialState = {
   isAuthenticated: false,
   isLoading: false,
   user: null,
-  error: null,
   status: null
 };
 
@@ -18,7 +17,7 @@ export const registerUser = createAsyncThunk(
       console.log("response of register auth slice => ", response);
       return response;
     } catch (error) {
-      console.error("Error in registerUser:", error);
+      console.error("Error in registerUser:", error?.response?.data?.message);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
@@ -28,15 +27,46 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (formData, { rejectWithValue }) => {
     try {
-      const response = await axios.post("http://localhost:5000/api/auth/login", formData);
+      const response = await axios.post("http://localhost:5000/api/auth/login", formData, {
+        withCredentials: true // it is used to send cookies
+      })
       console.log("response of login auth slice => ", response);
       return response;
     } catch (error) {
-      console.error("Error in loginUser:", error);
+      console.error("Error in loginUser:", error.response?.data);
       return rejectWithValue(error.response?.data || error.message);
     }
   }
 );
+
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async () => {
+      const response = await axios.post("http://localhost:5000/api/auth/logout");
+      console.log("response of logout auth slice => ", response);
+      return response;
+  }
+);
+
+
+export const checkAuth = createAsyncThunk("auth/checkAuth", async (_, {rejectWithValue}) => {
+  try {
+    const response = await axios.get("http://localhost:5000/api/auth/check-auth",
+      {
+        withCredentials: true,  // Make sure cookies must be present 
+        headers: {
+          "cache-control": "no-cache no-store must-revalidate proxy-revalidate",
+        },
+      }
+    );
+    
+    console.log("response of check auth slice => ", response);  // Log only the actual data
+    return response;  // Return the data from the response, not the entire response object
+  } catch (error) {
+    console.error("Error during check auth request:", error);
+    return rejectWithValue(error.response?.data);
+  }
+});
 
 const authSliceReducer = createSlice({
   name: "auth",
@@ -54,17 +84,53 @@ const authSliceReducer = createSlice({
         state.isLoading = false;
         state.isAuthenticated = false; // it will be true after login success
         state.user = null; // We will addd the details after login success
-        state.error = null;
         state.status = "fulfilled";
       }),
       builder.addCase(registerUser.rejected, (state,action) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;
-        state.error = action.message;
         state.status = "rejected";
-      });
-  },
+      }),
+
+      builder.addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+        state.status = "pending";
+      }),
+
+      builder.addCase(loginUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true; 
+        state.user = action.payload.data; 
+        state.status = "fulfilled";
+      }),
+
+      builder.addCase(loginUser.rejected, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.status = "rejected";
+      }),
+
+      builder.addCase(checkAuth.pending, (state) => {
+        state.isLoading = true;
+        state.status = "pending";
+      }),
+
+      builder.addCase(checkAuth.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = true; 
+        state.user = action.payload.data.user; 
+        state.status = "fulfilled";
+      }),
+
+      builder.addCase(checkAuth.rejected, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.status = "rejected";
+      })
+    }
 });
 
 export const { setUser } = authSliceReducer.actions;
