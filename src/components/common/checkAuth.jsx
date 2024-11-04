@@ -2,8 +2,8 @@ import React from "react";
 import { useLocation, Navigate } from "react-router-dom";
 
 const ValidateAuthentication = ({ isAuthenticated, userInfo, children }) => {
+  console.log("userInfo ", userInfo);
   const location = useLocation();
-  console.log("props => ", isAuthenticated, userInfo);
 
 //   Below is the scenario related to that if user is not authenticated and tries to go to any other route except /auth/login or /auth/register.
   if (
@@ -23,6 +23,7 @@ const ValidateAuthentication = ({ isAuthenticated, userInfo, children }) => {
     (location.pathname.includes("/login") ||
       location.pathname.includes("/register"))
   ) {
+    console.log("user role ", userInfo?.role);
     if (userInfo?.role === "admin") {
       return <Navigate to="/admin/dashboard" />;
     } else {

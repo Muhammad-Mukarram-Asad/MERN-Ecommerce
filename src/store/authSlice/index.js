@@ -83,7 +83,7 @@ const authSliceReducer = createSlice({
       builder.addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = false; // it will be true after login success
-        state.user = null; // We will addd the details after login success
+        state.user = null; // We will add the details after login success
         state.status = "fulfilled";
       }),
       builder.addCase(registerUser.rejected, (state,action) => {
@@ -101,11 +101,30 @@ const authSliceReducer = createSlice({
       builder.addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true; 
-        state.user = action.payload.data; 
+        state.user = action.payload.data.user; 
         state.status = "fulfilled";
       }),
 
       builder.addCase(loginUser.rejected, (state) => {
+        state.isLoading = false;
+        state.isAuthenticated = false;
+        state.user = null;
+        state.status = "rejected";
+      }),
+
+      builder.addCase(logoutUser.pending, (state) => {
+        state.isLoading = true;
+        state.status = "pending";
+      }),
+
+      builder.addCase(logoutUser.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isAuthenticated = false; 
+        state.user = null; 
+        state.status = "fulfilled";
+      }),
+
+      builder.addCase(logoutUser.rejected, (state) => {
         state.isLoading = false;
         state.isAuthenticated = false;
         state.user = null;

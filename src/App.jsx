@@ -15,6 +15,7 @@ import ShoppingCheckout from "./pages/shoppingView/checkout";
 import ShoppingAccount from "./pages/shoppingView/account";
 import ValidateAuthentication from "./components/common/checkAuth";
 import NotFoundPage from "./pages/notFound";
+import Home from "./pages/notFound/Home";
 import UnAuthenticatedPage from "./pages/unAuth";
 import { ToastContainer } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -26,10 +27,9 @@ function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const user = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
-  console.log("App.js userInfo => ",isAuthenticated, user);
+  console.log("isAuthenticated => ",isAuthenticated,"user => ", user);
 
   useEffect(() => {
-    console.log("Dispatching checkAuth");
     dispatch(checkAuth());
   }, [dispatch]);
 
@@ -38,7 +38,9 @@ function App() {
     <div className="flex flex-col overflow-hidden bg-white">
       <ToastContainer />
       {/* Auth Routes */}
+      
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/auth" element={
              <ValidateAuthentication isAuthenticated={isAuthenticated} userInfo={user}>
                <AuthLayout />

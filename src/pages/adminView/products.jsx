@@ -1,8 +1,14 @@
-import ComponentForm from '@/components/common/form'
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import React, { Fragment, useState } from 'react'
+import ComponentForm from "@/components/common/form";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
+import React, { Fragment, useState } from "react";
 import { addProductFormElements } from "@/config";
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
+import ProductImageUpload from "@/components/adminView/imageUpload";
 
 const AdminProduct = () => {
   const initialFormData = {
@@ -22,31 +28,50 @@ const AdminProduct = () => {
   const [imageFile, setImageFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   const [imageLoadingState, setImageLoadingState] = useState(false);
-  const [currentEditedId, setCurrentEditedId] = useState(null);  return (
-  
-  <Fragment>
-    <div className='w-full flex justify-end mb-5'>
-      <Button onClick={() => setOpenCreateProductsDialog(true)}>Add New Product</Button>
+  const [currentEditedId, setCurrentEditedId] = useState(null);
 
-    </div>
-    <div className='grid gap-4 md:grid-cols-3 lg:grid-cols-4'></div>
+  const onSubmit = async (e) => {
+    e.preventDefault();
 
-    <Sheet
-      open={openCreateProductsDialog}
-      onOpenChange={() => {
-        setOpenCreateProductsDialog(false);
-        setCurrentEditedId(null);
-        setFormData(initialFormData);
-      }}
+  };
+
+  return (
+    <Fragment>
+      <div className="w-full flex justify-end mb-5">
+        <Button onClick={() => setOpenCreateProductsDialog(true)}>
+          Add New Product
+        </Button>
+      </div>
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4"></div>
+
+      <Sheet
+        open={openCreateProductsDialog}
+        onOpenChange={() => {
+          setOpenCreateProductsDialog(false);
+          // setCurrentEditedId(null);
+          // setFormData(initialFormData);
+        }}
       >
         <SheetContent side="right" className="overflow-auto">
           <SheetHeader>
-            <SheetTitle> {currentEditedId !== null ? "Edit Product" : "Add New Product"}</SheetTitle>
+            <SheetTitle>
+              {" "}
+              {currentEditedId !== null ? "Edit Product" : "Add New Product"}
+            </SheetTitle>
           </SheetHeader>
 
-          <div className='py-6'>
-          <ComponentForm
-              // onSubmit={onSubmit}
+          <ProductImageUpload
+            imageFile={imageFile}
+            setImageFile={setImageFile}
+            uploadedImageUrl={uploadedImageUrl}
+            setUploadedImageUrl={setUploadedImageUrl}
+            imageLoadingState={imageLoadingState}
+            setImageLoadingState={setImageLoadingState}
+          />
+
+          <div className="py-6">
+            <ComponentForm
+              onSubmit={onSubmit}
               formData={formData}
               setFormData={setFormData}
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
@@ -54,11 +79,10 @@ const AdminProduct = () => {
               // isBtnDisabled={!isFormValid()}
             />
           </div>
-
         </SheetContent>
       </Sheet>
     </Fragment>
-  )
-}
+  );
+};
 
-export default AdminProduct
+export default AdminProduct;
