@@ -56,6 +56,8 @@ const ProductImageUpload = ({
 
   useEffect(() => {
     imageFile && uploadImageToCloudinary();
+
+    // eslint-disable-next-line
   }, [imageFile]);
 
   return (
