@@ -29,7 +29,7 @@ export const fetchAllProducts = createAsyncThunk(
   "/products/fetchAllProducts",
   async () => {
     const result = await axios.get(
-      "http://localhost:5000/api/admin/products/get"
+      "http://localhost:5000/api/admin/products/fetchAllProducts"
     );
 
     return result?.data;
@@ -69,16 +69,6 @@ const adminProductsSliceReducer = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-
-    builder.addCase(addNewProduct.pending, (state) => {
-      state.isLoading = true;
-    })
-    builder.addCase(addNewProduct.fulfilled, (state, action) => {
-      state.isLoading = false;
-    })
-    builder.addCase(addNewProduct.rejected, (state, action) => {
-      state.isLoading = false;
-    })
     builder
       .addCase(fetchAllProducts.pending, (state) => {
         state.isLoading = true;

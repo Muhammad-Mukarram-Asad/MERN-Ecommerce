@@ -4,8 +4,8 @@ import adminProductsSliceReducer from "./admin/productSlice";
 
 const store = configureStore({
     reducer: {
-        auth: authSliceReducer
-        , adminProducts: adminProductsSliceReducer
+        auth: authSliceReducer,
+        adminProducts: adminProductsSliceReducer
     },
 });
 

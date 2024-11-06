@@ -3,7 +3,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { useRef } from "react";
-import { FileIcon, Loader2Icon, UploadCloud, XIcon } from "lucide-react";
+import { FileIcon, Loader2, UploadCloud, XIcon } from "lucide-react";
 import axios from "axios";
 
 const ProductImageUpload = ({
@@ -46,7 +46,6 @@ const ProductImageUpload = ({
       "http://localhost:5000/api/admin/products/upload-image",
       formData
     );
-    console.log("Image upload response => ", response);
     response && (
         setUploadedImageUrl(response?.data?.data?.url),
         setImageLoadingState(false)
@@ -78,7 +77,7 @@ const ProductImageUpload = ({
           onChange={handleUploadImageFile}
         />
 
-        {!imageFile && !uploadedImageUrl ? (
+        {!imageFile ? (
           <Label
             htmlFor="image-upload"
             className="flex flex-col justify-center items-center h-32 cursor-pointer"
@@ -86,7 +85,12 @@ const ProductImageUpload = ({
             <UploadCloud className="h-10 w-10 text-muted-foreground mb-2 text-center" />
             <span>Drag & drop or Click to Upload</span>
           </Label>
-        )  : (
+        ) : imageLoadingState ? (
+          <div className="flex items-center justify-center mt-1 mb-1">
+            <Loader2 className="h-10 w-10  animate-spin" />
+            
+          </div>
+        ) : (
           <div className="flex items-center justify-between mt-5">
             <div className="flex items-center">
               <FileIcon className="w-8 h-8 text-primary mr-2" />
