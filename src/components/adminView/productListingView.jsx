@@ -8,11 +8,11 @@ import { toast } from "react-toastify";
 const ProductListingView = ({ product, setOpenCreateProductsDialog, setCurrentEditedId, setFormData }) => {
   
     const dispatch = useDispatch();
-  const handleDeleteProduct = (id) => {
+  const handleDeleteProduct = async (id) => {
     console.log("delete id => ", id);
     try {
-        const deleteProdResult =  dispatch(deleteProduct(id));
-        if (deleteProdResult) {
+        const deleteProdResult =  await dispatch(deleteProduct(id));
+        if (deleteProduct.fulfilled.match(deleteProdResult) || deleteProdResult?.payload?.success) {
           toast.success("Product deleted successfully");
           dispatch(fetchAllProducts());
         }
@@ -27,7 +27,7 @@ const ProductListingView = ({ product, setOpenCreateProductsDialog, setCurrentEd
       setOpenCreateProductsDialog(true);
     }
     return (
-      <Card className="w-[30%] max-w-sm mx-auto">
+      <Card className="w-full max-w-sm mx-auto">
         <div>
       <div className="relative">
         <img

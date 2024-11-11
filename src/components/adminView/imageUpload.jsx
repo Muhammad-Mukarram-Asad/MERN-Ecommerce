@@ -13,6 +13,7 @@ const ProductImageUpload = ({
   setUploadedImageUrl,
   imageLoadingState,
   setImageLoadingState,
+  isEditMode
 }) => {
   const imageRef = useRef(null);
 
@@ -75,12 +76,14 @@ const ProductImageUpload = ({
           className=""
           ref={imageRef}
           onChange={handleUploadImageFile}
+          disabled={isEditMode}
         />
 
         {!imageFile ? (
           <Label
             htmlFor="image-upload"
-            className="flex flex-col justify-center items-center h-32 cursor-pointer"
+            className={`${isEditMode ? "cursor-not-allowed" : ""}
+              "flex flex-col justify-center items-center h-32 cursor-pointer" }`}
           >
             <UploadCloud className="h-10 w-10 text-muted-foreground mb-2 text-center" />
             <span>Drag & drop or Click to Upload</span>

@@ -41,6 +41,7 @@ const AdminProduct = () => {
   const dispatch = useDispatch();
 
   const { productList } = useSelector((state) => state.adminProducts);
+  console.log("form data => ", formData);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +50,7 @@ const AdminProduct = () => {
         currentEditedId !== null
           ? await dispatch(
               editProduct({
-                ...formData,
+                formData: { ...formData },
                 image: uploadedImageUrl,
                 id: currentEditedId,
               })
@@ -61,7 +62,8 @@ const AdminProduct = () => {
               })
             );
 
-      if (result) {
+       console.log("result => ", result);
+      if (result?.payload?.success) {
         currentEditedId !== null
           ? toast.success("Product Edited Successfully...")
           : toast.success("New Product Added Successfully...");
@@ -82,8 +84,6 @@ const AdminProduct = () => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
-  console.log("productList => ", productList);
-
   return (
     <Fragment>
       <div className="w-full flex justify-end mb-5">
@@ -91,7 +91,7 @@ const AdminProduct = () => {
           Add New Product
         </Button>
       </div>
-      <div className="flex justify-around flex-wrap gap-5">
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
         {productList.length > 0
           ? productList.map((prodItem, index) => (
               <ProductListingView
@@ -109,8 +109,8 @@ const AdminProduct = () => {
         open={openCreateProductsDialog}
         onOpenChange={() => {
           setOpenCreateProductsDialog(false);
-          // setCurrentEditedId(null);
-          // setFormData(initialFormData);
+          setCurrentEditedId(null);
+          setFormData(initialFormData);
         }}
       >
         <SheetContent side="right" className="overflow-auto">
@@ -128,6 +128,7 @@ const AdminProduct = () => {
             setUploadedImageUrl={setUploadedImageUrl}
             imageLoadingState={imageLoadingState}
             setImageLoadingState={setImageLoadingState}
+            isEditMode={currentEditedId === null ? false : true}
           />
           <div className="py-6">
             <ComponentForm
