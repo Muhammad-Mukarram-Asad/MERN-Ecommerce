@@ -41,8 +41,11 @@ export const loginUser = createAsyncThunk(
 
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
+  // for removing token after logging out, we should have to send an empty data like this {}
   async () => {
-      const response = await axios.post("http://localhost:5000/api/auth/logout");
+      const response = await axios.post("http://localhost:5000/api/auth/logout", {}, {
+        withCredentials: true
+      });
       console.log("response of logout auth slice => ", response);
       return response;
   }

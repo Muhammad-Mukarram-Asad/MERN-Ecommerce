@@ -1,8 +1,9 @@
 import React from 'react'
+import ShoppingHeader from '@/components/shoppingView/header'
 
 const ShoppingListing = () => {
   return (
-    <div>ShoppingListing</div>
+    <ShoppingHeader />
   )
 }
 

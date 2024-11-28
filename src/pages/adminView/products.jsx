@@ -80,10 +80,16 @@ const AdminProduct = () => {
     }
   };
 
+
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, [dispatch]);
 
+  const isFormValid = () => {
+    return (
+   Object.keys(formData).every((item) => formData[item] !== "")
+    )
+  }
   return (
     <Fragment>
       <div className="w-full flex justify-end mb-5">
@@ -137,7 +143,7 @@ const AdminProduct = () => {
               setFormData={setFormData}
               buttonText={currentEditedId !== null ? "Edit" : "Add"}
               formControls={addProductFormElements}
-              // isBtnDisabled={!isFormValid()}
+              isBtnDisabled={!isFormValid()}
             />
           </div>
         </SheetContent>
