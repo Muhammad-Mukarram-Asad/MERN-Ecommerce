@@ -1,21 +1,29 @@
-import { House, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import { HousePlug, House,  LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import React from "react";
-import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { DropdownMenu, DropdownMenuItem } from "../ui/dropdown-menu";
 import { useSelector } from "react-redux";
 import { shoppingViewHeaderMenuItems } from "@/config";
-import { Avatar, AvatarFallback } from "@radix-ui/react-avatar";
 import {
+  DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-
+} from "../ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const menuItems = () => {
     return (
@@ -58,14 +66,16 @@ const ShoppingHeader = () => {
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={() => navigate("/shop/account")}>
               <UserCog className="mr-2 w-4 h-4" />
+              Account
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
 
             <DropdownMenuItem>
               <LogOut className="mr-2 w-4 h-4" />
+              Logout
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -103,6 +113,40 @@ const ShoppingHeader = () => {
       </div>
     </header>
   );
+
+  // function ShoppingHeader() {
+  //   const { isAuthenticated } = useSelector((state) => state.auth);
+
+  //   return (
+  //     <header className="sticky top-0 z-40 w-full border-b bg-background">
+  //       <div className="flex h-16 items-center justify-between px-4 md:px-6">
+  //         <Link to="/shop/home" className="flex items-center gap-2">
+  //           <HousePlug className="h-6 w-6" />
+  //           <span className="font-bold">Ecommerce</span>
+  //         </Link>
+  //         <Sheet>
+  //           <SheetTrigger asChild>
+  //             <Button variant="outline" size="icon" className="lg:hidden">
+  //               <Menu className="h-6 w-6" />
+  //               <span className="sr-only">Toggle header menu</span>
+  //             </Button>
+  //           </SheetTrigger>
+  //           <SheetContent side="left" className="w-full max-w-xs">
+  //             <menuItems />
+  //             <HeaderRightContent />
+  //           </SheetContent>
+  //         </Sheet>
+  //         <div className="hidden lg:block">
+  //           <menuItems />
+  //         </div>
+  
+  //         <div className="hidden lg:block">
+  //           <HeaderRightContent />
+  //         </div>
+  //       </div>
+  //     </header>
+  //   );
+  // }
 };
 
 export default ShoppingHeader;
