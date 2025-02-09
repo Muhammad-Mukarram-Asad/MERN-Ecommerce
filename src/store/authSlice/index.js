@@ -71,7 +71,7 @@ export const checkAuth = createAsyncThunk("auth/checkAuth", async (_, {rejectWit
   }
 });
 
-const authSliceReducer = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState: initialState,
   reducers: {
@@ -155,5 +155,5 @@ const authSliceReducer = createSlice({
     }
 });
 
-export const { setUser } = authSliceReducer.actions;
-export default authSliceReducer.reducer;
+export const { setUser } = authSlice.actions;
+export default authSlice.reducer;
