@@ -1,4 +1,11 @@
-import { HousePlug, House,  LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
+import {
+  HousePlug,
+  House,
+  LogOut,
+  Menu,
+  ShoppingCart,
+  UserCog,
+} from "lucide-react";
 import React from "react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
@@ -13,6 +20,8 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "../ui/avatar";
+import { useDispatch } from "react-redux";
+import { logoutUser } from "@/store/authSlice";
 import {
   Link,
   useLocation,
@@ -21,9 +30,16 @@ import {
 } from "react-router-dom";
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  console.log("user => ", user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/auth/login");
+  };
 
   const menuItems = () => {
     return (
@@ -33,7 +49,7 @@ const ShoppingHeader = () => {
             <Link
               key={items.id}
               to={items.path}
-              className="text-sm font-medium"
+              className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
               {items.label}
             </Link>
@@ -73,7 +89,7 @@ const ShoppingHeader = () => {
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 w-4 h-4" />
               Logout
             </DropdownMenuItem>
@@ -89,7 +105,6 @@ const ShoppingHeader = () => {
           <House className="h-6 w-6" />
           <span className="font-bold">Ecommerce</span>
         </Link>
-
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -104,49 +119,18 @@ const ShoppingHeader = () => {
 
           <SheetContent side="left" className="w-full max-w-xs">
             {menuItems()}
+            <HeaderRightContent />
           </SheetContent>
         </Sheet>
-
-        <div className="hidden lg:block">{menuItems()}</div>
-
-        {isAuthenticated ? <div>{HeaderRightContent()}</div> : null}
+        <div className="hidden lg:block">
+          {menuItems()}
+        </div>
+        <div className="hidden lg:block">
+          <HeaderRightContent />
+        </div>{" "}
       </div>
     </header>
   );
-
-  // function ShoppingHeader() {
-  //   const { isAuthenticated } = useSelector((state) => state.auth);
-
-  //   return (
-  //     <header className="sticky top-0 z-40 w-full border-b bg-background">
-  //       <div className="flex h-16 items-center justify-between px-4 md:px-6">
-  //         <Link to="/shop/home" className="flex items-center gap-2">
-  //           <HousePlug className="h-6 w-6" />
-  //           <span className="font-bold">Ecommerce</span>
-  //         </Link>
-  //         <Sheet>
-  //           <SheetTrigger asChild>
-  //             <Button variant="outline" size="icon" className="lg:hidden">
-  //               <Menu className="h-6 w-6" />
-  //               <span className="sr-only">Toggle header menu</span>
-  //             </Button>
-  //           </SheetTrigger>
-  //           <SheetContent side="left" className="w-full max-w-xs">
-  //             <menuItems />
-  //             <HeaderRightContent />
-  //           </SheetContent>
-  //         </Sheet>
-  //         <div className="hidden lg:block">
-  //           <menuItems />
-  //         </div>
-  
-  //         <div className="hidden lg:block">
-  //           <HeaderRightContent />
-  //         </div>
-  //       </div>
-  //     </header>
-  //   );
-  // }
 };
 
 export default ShoppingHeader;
