@@ -1,19 +1,20 @@
 import { Minus, Plus, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCartItem, updateCartQuantity } from "@/store/shop/cart-slice";
-import { useToast } from "../ui/use-toast";
+import { deleteCartItem, fetchAllCartItems, updateCartQuantity } from "@/store/shop/cartSlice";
+import {toast} from "react-toastify"
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.shoppingCart);
   const { productList } = useSelector((state) => state.shoppingProducts);
   const dispatch = useDispatch();
-  const { toast } = useToast();
+
 
   function handleUpdateQuantity(getCartItem, typeOfAction) {
     if (typeOfAction == "plus") {
       let getCartItems = cartItems.items || [];
+      console.log("getCartItems => ", getCartItems);
 
       if (getCartItems.length) {
         const indexOfCurrentCartItem = getCartItems.findIndex(
@@ -54,6 +55,7 @@ function UserCartItemsContent({ cartItem }) {
       if (data?.payload?.success) {
         toast({
           title: "Cart item is updated successfully",
+          variant: "success",
         });
       }
     });
@@ -64,9 +66,7 @@ function UserCartItemsContent({ cartItem }) {
       deleteCartItem({ userId: user?.id, productId: getCartItem?.productId })
     ).then((data) => {
       if (data?.payload?.success) {
-        toast({
-          title: "Cart item is deleted successfully",
-        });
+        toast.success(data?.payload?.message);
       }
     });
   }
@@ -99,17 +99,20 @@ function UserCartItemsContent({ cartItem }) {
             onClick={() => handleUpdateQuantity(cartItem, "plus")}
           >
             <Plus className="w-4 h-4" />
-            <span className="sr-only">Decrease</span>
+            <span className="sr-only">Increase</span>
           </Button>
         </div>
       </div>
       <div className="flex flex-col items-end">
         <p className="font-semibold">
           $
-          {(
-            (cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
+          {Intl.NumberFormat("en-US").format(
+            ((cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price) *
             cartItem?.quantity
-          ).toFixed(2)}
+          )
+          )
+        }
+          
         </p>
         <Trash
           onClick={() => handleCartItemDelete(cartItem)}

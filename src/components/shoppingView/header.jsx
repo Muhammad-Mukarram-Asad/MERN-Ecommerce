@@ -6,7 +6,7 @@ import {
   ShoppingCart,
   UserCog,
 } from "lucide-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "../ui/button";
 import { useSelector } from "react-redux";
@@ -28,18 +28,28 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
+import UserCartWrapper from "./cartWrapper";
+import { fetchAllCartItems } from "@/store/shop/cartSlice";
 const ShoppingHeader = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shoppingCart);
+
   console.log("user => ", user);
+  console.log("cartItems => ", cartItems);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [openCartSheet, setOpenCartSheet] = useState(false);
 
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/auth/login");
   };
+
+  useEffect(() => {
+    dispatch(fetchAllCartItems(user?.id));
+  }, [dispatch, user, openCartSheet]);
 
   const menuItems = () => {
     return (
@@ -62,10 +72,27 @@ const ShoppingHeader = () => {
   function HeaderRightContent() {
     return (
       <div className="flex lg:items-center lg:flex-row flex-col gap-4">
-        <Button variant={"outline"} size={"icon"}>
-          <ShoppingCart className="h-6 w-6" />
-          <span className="sr-only">User Cart</span>
-        </Button>
+        <Sheet
+          open={openCartSheet}
+          onOpenChange={() => setOpenCartSheet(false)}
+        >
+          <Button
+            variant={"outline"}
+            size={"icon"}
+            onClick={() => setOpenCartSheet(true)}
+          >
+            <ShoppingCart className="h-6 w-6" />
+            <span className="sr-only">User Cart</span>
+          </Button>
+          <UserCartWrapper
+            cartItems={
+              cartItems && cartItems.items && cartItems.items.length > 0
+                ? cartItems.items
+                : []
+            }
+            setOpenCartSheet={setOpenCartSheet}
+          />
+        </Sheet>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -112,7 +139,7 @@ const ShoppingHeader = () => {
               variant={"outline"}
               size={"icon"}
             >
-              <Menu className="h-6 w-6" />
+              <Menu className="h-6 w-6 d-flex justify-center items-center" />
               <span className="sr-only">Toggle Header Menu</span>
             </Button>
           </SheetTrigger>
@@ -122,9 +149,7 @@ const ShoppingHeader = () => {
             <HeaderRightContent />
           </SheetContent>
         </Sheet>
-        <div className="hidden lg:block">
-          {menuItems()}
-        </div>
+        <div className="hidden lg:block">{menuItems()}</div>
         <div className="hidden lg:block">
           <HeaderRightContent />
         </div>{" "}
